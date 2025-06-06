@@ -3,12 +3,13 @@ import Persons from './Persons'
 import PersonForm from './PersonForm'
 import Filter from './Filter'
 import personService from './Services'
-
+import Notification from './Notification'
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber]=useState('')
   const [filter,setFilter]=useState('')
+  const [showMessage, setShowMessage]=useState(null)
 
   useEffect(() => {
     personService
@@ -51,24 +52,30 @@ const App = () => {
           //Update the local state persons and replace the old contacts with new data
           setNewName('')
           setNewNumber('')  
+          setShowMessage({text:`${returnData.name} 's number is updated`,type:'success'} )
+          setTimeout(()=>{
+            setShowMessage(null)},5000)
         })
         .catch(error=>{
-          console.error('Error updating person:', error)
+           setShowMessage({text:`Information of ${existingPerson.name} has already been removed from the server`,type:'error'})
+          setTimeout(() => setShowMessage(null), 5000)
         })  
       }
 
+    }else {
+      personService
+        .create(nameObject)
+        .then(returnData => {
+          setPersons(persons.concat(returnData))
+          setNewName('')
+          setNewNumber('')
+          setShowMessage({text:`Added ${returnData.name}`,type:'success'})
+          setTimeout(() => setShowMessage(null), 5000)
+        })
+        .catch(error => {
+          console.error('Error adding person:', error)
+        })
     }
-    personService
-    .create(nameObject)
-    .then(returnData=>{
-      setPersons(persons.concat(returnData)) // add one to the list
-      setNewName('')
-      setNewNumber('')
-    })
-    .catch(error=>{
-      console.error('Error adding person:', error)
-    })
-    
   }
 
   const filteredPersons = persons.filter(person =>
@@ -92,6 +99,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={showMessage} />
       <Filter value={filter} onChange={handleFilterChange}/>
      
       <h3>Add a new</h3>
