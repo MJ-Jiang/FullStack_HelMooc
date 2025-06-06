@@ -3,10 +3,10 @@ import { useState}from "react"
 
 
 
-const PersonForm =({addName,newName,newNumber,handleNameChange,handleNewNumberChange})=>{
+const PersonForm =({addObject,newName,newNumber,handleNameChange,handleNewNumberChange})=>{
     return (
        
-     <form onSubmit={addName}>
+     <form onSubmit={addObject}>
         <div>
           name: <input value={newName}
           onChange={handleNameChange} />
