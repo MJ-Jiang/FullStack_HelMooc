@@ -1,10 +1,11 @@
 const morgan = require('morgan')
 const express = require('express')
 const app = express()
+
 app.use(express.json()) //access the data easily
 //3.7
 app.use(morgan('tiny')) 
-
+app.use(express.static('dist'))
 let notes = [
     { 
       "id": "1",
@@ -107,6 +108,6 @@ app.post('/api/persons',(request,response)=>{
 
 
 
-const PORT = 3001
+const PORT = process.env.PORT||3001
 app.listen(PORT)
 console.log(`Server running on port ${PORT}`)
