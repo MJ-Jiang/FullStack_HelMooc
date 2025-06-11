@@ -84,7 +84,7 @@ app.get('/api/persons/:id',(request,response)=>{
    
 })
 //3.4
-app.delete('/api/persons/:id',async(request,response)=>{
+app.delete('/api/persons/:id',(request,response)=>{
     const id=request.params.id
     Person.findByIdAndDelete(id).then(() => {
         response.status(204).end()
@@ -94,30 +94,25 @@ app.delete('/api/persons/:id',async(request,response)=>{
     })  
 })
 //3.6
-app.post('/api/persons', async (request, response) => {
-    const body = request.body
-    if (!body.name) {
+app.post('/api/persons',(request,response)=>{
+    const body=request.body
+    if(!body.name){
         return response.status(400).json({
             error: 'name missing',
         })                                                  
-    }
-    if (!body.number) {
+       
+    }else if(!body.number){
         return response.status(400).json({
             error: 'number missing',
         })      
-    }
-    const existingPerson = await Person.findOne({ name: body.name })
-    if (existingPerson) {
+    }else if(Person.find(note=>note.name===body.name)){
         return response.status(400).json({
             error: 'name must be unique',
         })
     }
-
-    const person = new Person({
-        name: body.name,
-        number: body.number
-    })
+    const person=new Person({
+        name:body.name,
+        number:body.number})
     person.save().then(savedPerson => {
-        response.json(savedPerson)
-    })   
+        response.json(savedPerson) })   
 })

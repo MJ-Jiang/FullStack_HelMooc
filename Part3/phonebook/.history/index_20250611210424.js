@@ -11,28 +11,28 @@ app.use(express.json()) //access the data easily
 //3.7
 app.use(morgan('tiny')) 
 app.use(express.static('dist'))
-// let notes = [
-//    { 
-//       "id": "1",
-//       "name": "Arto Hellas", 
-//       "number": "040-123456"
-//     },
-//     { 
-//       "id": "2",
-//       "name": "Ada Lovelace", 
-//       "number": "39-44-5323523"
-//     },
-//     { 
-//       "id": "3",
-//       "name": "Dan Abramov", 
-//       "number": "12-43-234345"
-//     },
-//     { 
-//       "id": "4",
-//       "name": "Mary Poppendieck", 
-//       "number": "39-23-6423122"
-//     }
-// ]
+let notes = [
+   { 
+      "id": "1",
+      "name": "Arto Hellas", 
+      "number": "040-123456"
+    },
+    { 
+      "id": "2",
+      "name": "Ada Lovelace", 
+      "number": "39-44-5323523"
+    },
+    { 
+      "id": "3",
+      "name": "Dan Abramov", 
+      "number": "12-43-234345"
+    },
+    { 
+      "id": "4",
+      "name": "Mary Poppendieck", 
+      "number": "39-23-6423122"
+    }
+]
 
 
 
@@ -62,14 +62,11 @@ app.get('/api/persons', (request, response) => {
 //3.2
 app.get('/info',(request,response)=>{
     const nowData=new Date().toString()
-    Person.countDocuments({}).then(count=> {
-        response.send(`<div>
-                        <p>Phonebook has info for ${count} people</p>
-                        <p>${nowData}</p>
-                        </div>`)
-        })
-
-   
+    const count=notes.length
+    response.send(`<div>
+                    <p>Phonebook has info for ${count} people</p>
+                    <p>${nowData}</p>
+                    </div>`)
 })
 //3.3
 app.get('/api/persons/:id',(request,response)=>{
@@ -84,40 +81,36 @@ app.get('/api/persons/:id',(request,response)=>{
    
 })
 //3.4
-app.delete('/api/persons/:id',async(request,response)=>{
+app.delete('/api/persons/:id',(request,response)=>{
     const id=request.params.id
-    Person.findByIdAndDelete(id).then(() => {
-        response.status(204).end()
-    }).catch(error => {
-        console.error(error)
-        response.status(500).json({ error: 'failed to delete' })
-    })  
+    notes=notes.filter(note=>note.id!==id)
+    response.status(204).end()
 })
 //3.6
-app.post('/api/persons', async (request, response) => {
-    const body = request.body
-    if (!body.name) {
+const generatedId=()=>{
+    const randomID=Math.floor(Math.random()*10000)
+    return randomID.toString()  
+}
+app.post('/api/persons',(request,response)=>{
+    const body=request.body
+    if(!body.name){
         return response.status(400).json({
             error: 'name missing',
         })                                                  
-    }
-    if (!body.number) {
+       
+    }else if(!body.number){
         return response.status(400).json({
             error: 'number missing',
         })      
-    }
-    const existingPerson = await Person.findOne({ name: body.name })
-    if (existingPerson) {
+    }else if(Person.find(note=>note.name===body.name)){
         return response.status(400).json({
             error: 'name must be unique',
         })
     }
-
-    const person = new Person({
-        name: body.name,
-        number: body.number
-    })
+    const person=new Person({
+        id: generatedId(),
+        name:body.name,
+        number:body.number})
     person.save().then(savedPerson => {
-        response.json(savedPerson)
-    })   
+        response.json(savedPerson) })   
 })
