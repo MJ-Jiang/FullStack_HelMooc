@@ -8,35 +8,9 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
 app.use(express.json()) //access the data easily
-//3.7
+
 app.use(morgan('tiny')) 
 app.use(express.static('dist'))
-// let notes = [
-//    { 
-//       "id": "1",
-//       "name": "Arto Hellas", 
-//       "number": "040-123456"
-//     },
-//     { 
-//       "id": "2",
-//       "name": "Ada Lovelace", 
-//       "number": "39-44-5323523"
-//     },
-//     { 
-//       "id": "3",
-//       "name": "Dan Abramov", 
-//       "number": "12-43-234345"
-//     },
-//     { 
-//       "id": "4",
-//       "name": "Mary Poppendieck", 
-//       "number": "39-23-6423122"
-//     }
-// ]
-
-
-
-
 
 
 morgan.token(
@@ -49,6 +23,8 @@ morgan.token(
 )
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms: body'))
 
+
+
 app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
 })
@@ -59,7 +35,7 @@ app.get('/api/persons', (request, response) => {
      })
 })
 
-//3.2
+
 app.get('/info',(request,response)=>{
     const nowData=new Date().toString()
     Person.countDocuments({}).then(count=> {
@@ -71,43 +47,44 @@ app.get('/info',(request,response)=>{
 
    
 })
-//3.3
-app.get('/api/persons/:id',(request,response)=>{
+
+app.get('/api/persons/:id',(request,response,next)=>{
     const id=request.params.id
     Person.findById(id).then(note => {
         if (note) {    response.json(note) 
    
         } else {
             response.status(404).end()
-        } }  
-    )
+        }
+     }).catch(error=>next(error)) 
    
 })
-//3.4
-app.delete('/api/persons/:id',async(request,response)=>{
+
+app.delete('/api/persons/:id',async(request,response,next)=>{
     const id=request.params.id
     Person.findByIdAndDelete(id).then(() => {
         response.status(204).end()
-    }).catch(error => {
-        console.error(error)
-        response.status(500).json({ error: 'failed to delete' })
-    })  
+    }).catch(error => next(error))  
 })
-//3.6
+
 app.post('/api/persons', async (request, response) => {
     const body = request.body
     if (!body.name) {
+        console.log('name missing')
         return response.status(400).json({
             error: 'name missing',
-        })                                                  
+        })     
+
     }
     if (!body.number) {
+        console.log('number missing')   
         return response.status(400).json({
             error: 'number missing',
-        })      
+        })     
     }
     const existingPerson = await Person.findOne({ name: body.name })
     if (existingPerson) {
+        console.log('duplicate name found')
         return response.status(400).json({
             error: 'name must be unique',
         })
@@ -119,5 +96,35 @@ app.post('/api/persons', async (request, response) => {
     })
     person.save().then(savedPerson => {
         response.json(savedPerson)
-    })   
+    }).catch(error=>next(error))
 })
+app.put('/api/persons/:id', (request, response, next) => {
+  const { name,number } = request.body
+
+  Person.findById(request.params.id)
+    .then(person => {
+      if (!person) {
+        return response.status(404).end()
+      }
+
+      person.name=name
+      person.number=number
+
+      return person.save().then((updatedNote) => {
+        response.json(updatedNote)
+      })
+    })
+    .catch(error => next(error))
+})
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } 
+
+  next(error)
+}
+
+app.use(errorHandler)
+//If next was called without an argument, then the execution would simply move onto the next route or middleware. If the next function is called with an argument, then the execution will continue to the error handler middleware.
