@@ -63,32 +63,17 @@ const App = () => {
       }
 
     }else {
-      //task2
-      // personService
-      //   .create(nameObject)
-      //   .then(returnData => {
-      //     setPersons(persons.concat(returnData))
-      //     setNewName('')
-      //     setNewNumber('')
-      //     setShowMessage({text:`Added ${returnData.name}`,type:'success'})
-      //     setTimeout(() => setShowMessage(null), 5000)
-      //   })
-      //   .catch(error => {
-      //     console.error('Error adding person:', error)
-      //   })
-      //3.19
-        personService.create(nameObject)
-        .then(returnData=>{
+      personService
+        .create(nameObject)
+        .then(returnData => {
           setPersons(persons.concat(returnData))
           setNewName('')
           setNewNumber('')
           setShowMessage({text:`Added ${returnData.name}`,type:'success'})
-          setTimeout(() => setShowMessage(null), 5000)  
-        })
-        .catch(error=>{
-          console.log(error.response.data.error)
-          setShowMessage({text:error.response.data.error,type:'error'})
           setTimeout(() => setShowMessage(null), 5000)
+        })
+        .catch(error => {
+          console.error('Error adding person:', error)
         })
     }
   }
