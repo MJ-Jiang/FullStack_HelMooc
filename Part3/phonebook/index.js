@@ -67,7 +67,7 @@ app.delete('/api/persons/:id',async(request,response,next)=>{
     }).catch(error => next(error))  
 })
 
-app.post('/api/persons', async (request, response) => {
+app.post('/api/persons', async (request, response,next) => {
     const body = request.body
     if (!body.name) {
         console.log('name missing')
@@ -121,7 +121,9 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
-  } 
+  } else if(error.name==='ValidationError'){
+    return response.status(400).json({error:error.message})
+  }
 
   next(error)
 }
