@@ -1,9 +1,10 @@
 POST http://localhost:3001/api/blogs
 Content-Type: application/json
 
-{
-  "title": "New Blog2",
-  "author": "JuneMM",
-  "url": "https://example.com/new-blog1",
-  "likes":6    
-  }
+ {
+  "title": "TDD harms architecture",
+  "author": "Robert C. Martin",
+ "url": "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
+ "likes": 0
+ }
+
