@@ -37,6 +37,15 @@ describe('total likes', () => {
         const result = listHelper.totalLikes(emptyList)
         assert.strictEqual(result, 0)
     })
+    test('find the favorite blog',()=>{
+        const listWithMultipleBlogs=[
+        {"title":"A","likes":5},
+          {"title":"B","likes":6},
+         {"title":"C","likes":10}
+        ]
+        const result=listHelper.favoriteBlog(listWithMultipleBlogs)
+        assert.deepStrictEqual(result, {"title":"C","likes":10})
+    })
 
    test('dummy returns one', () => {
     const blogs = []
