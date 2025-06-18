@@ -53,6 +53,26 @@ describe('total likes', () => {
     const result = listHelper.dummy(blogs)
     assert.strictEqual(result, 1)
  })
+ test('return the author with most blogs',()=>{
+    const blogs=[
+        {"title":"blog1","author":"A","likes":5},
+         {"title":"blog2","author":"A","likes":6},
+          {"title":"blog3","author":"B","likes":1},
+           {"title":"blog4","author":"C","likes":3}
+    ]
+    const result =listHelper.mostBlogs(blogs)
+    assert.deepStrictEqual(result,{"author":"A",blogs:2})
+ })
+ test('return author with most likes',()=>{
+     const blogs=[
+        {"title":"blog1","author":"A","likes":5},
+         {"title":"blog2","author":"A","likes":6},
+          {"title":"blog3","author":"B","likes":1},
+           {"title":"blog4","author":"C","likes":3}
+    ]
+    const result =listHelper.mostLikes(blogs)
+    assert.deepStrictEqual(result,{"author":"A",'likes':11})
+ })
 
 })
 
