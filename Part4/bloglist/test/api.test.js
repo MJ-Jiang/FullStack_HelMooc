@@ -61,6 +61,39 @@ test('create a new blog',async()=>{
     assert(titles.includes('blogx'))
     
 })
+test('blog without likes',async()=>{
+    const newBlog={
+           "title":"blogm",
+        "author":"D",
+        "url":"www.google.com",
+        
+    }
+    const response = await api.post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+    assert.strictEqual(response.body.likes,0)
+})
+test('blog without title returns 400',async()=>{
+    const newBlog={
+        author: 'noTitle',
+        url: 'http://example.com',
+        likes: 2
+    }
+    await api.post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+test('blog without url returns 400',async()=>{
+    const newBlog={
+        title: 'noUrL',
+        author: 'noUrl',
+        likes: 2
+    }
+    await api.post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
 after(async () => {
   await mongoose.connection.close()
 })
