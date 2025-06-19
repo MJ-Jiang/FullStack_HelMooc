@@ -1,5 +1,5 @@
 
-
+// process blog data, take plain JavaScript objects (blog lists) and verify that helper functions give the right output.
 const { test, describe } = require('node:test')
 const assert = require('node:assert')
 const listHelper = require('../utils/list_helper')
