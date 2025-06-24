@@ -3,18 +3,25 @@ require('express-async-errors')
 const express = require('express')
 const mongoose = require('mongoose')
 const config = require('./utils/config')
-const blogsRouter = require('./controllers/blog')
-
+const blogsRouter = require('./controllers/blogs')
+const usersRouter=require('./controllers/users')
+const loginRouter=require('./controllers/login')
+const middleware = require('./utils/errorHandle')
 const app = express()
 
 mongoose.connect(config.MONGODB_URI)
 
 app.use(express.json())
-app.use('/api/blogs', blogsRouter)
-app.use((error, request, response, next) => {
-    console.error(error.message)
-    response.status(500).json({ error: 'something went wrong on the server' })
+app.use((request, response, next) => {
+    console.log(`${request.method} ${request.path}`)
+    next()
+    
 })
+app.use('/api/blogs', blogsRouter)
+app.use('/api/users',usersRouter)
+app.use('/api/login',loginRouter)
+app.use(middleware.errorHandler)
+
 
 
 module.exports = app
