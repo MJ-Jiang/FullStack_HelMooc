@@ -1,10 +1,10 @@
 POST http://localhost:3001/api/blogs
 Content-Type: application/json
 
- {
+{
   "title": "TDD harms architecture",
   "author": "Robert C. Martin",
- "url": "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
- "likes": 0
- }
-
+  "url": "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
+  "userId": "685a8b582ecafb5735d87a03",
+  "likes": 0
+}

@@ -3,26 +3,26 @@ const jwt = require('jsonwebtoken')
 const { response } = require('../app')
 const Blog = require('../models/blog')
 const User = require('../models/user')//new
-const getTokenFrom = request => {
-  const authorization = request.get('authorization')
-  if (authorization && authorization.startsWith('Bearer ')) {
-    return authorization.replace('Bearer ', '')
-  }
-  return null
-} //new
+// const getTokenFrom = request => {
+//   const authorization = request.get('authorization')
+//   if (authorization && authorization.startsWith('Bearer ')) {
+//     return authorization.replace('Bearer ', '')
+//   }
+//   return null
+// } //new
 blogRouter.get('/', async (request, response) => {
-        const blogs=await Blog.find({})
+        const blogs=await Blog.find({}).populate('userId', { username: 1, name: 1 ,id:1})
         response.json(blogs)
 
 })
 blogRouter.post('/', async(request, response) => {
     const {title,author,url,likes,userId}=request.body
-    const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
-    if (!decodedToken.id) {
-        return response.status(401).json({ error: 'token invalid' })
-    }
-    const user = await User.findById(decodedToken.id)//new
-  //  const user=await User.findById(body.userId) //new
+    // const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+    // if (!decodedToken.id) {
+    //     return response.status(401).json({ error: 'token invalid' })
+    // }
+    //const user = await User.findById(decodedToken.id)//new
+    const user=await User.findById(userId) 
     if (!user) {
     return response.status(400).json({ error: 'userId missing or not valid' })
     }//new
@@ -35,12 +35,12 @@ blogRouter.post('/', async(request, response) => {
             author,
             url,
             likes:likes||0,
-            user: user._id  //new
+            userId: user._id  //new
 
         })
         const saveBlog=await blog.save()
-        user.notes=user.notes.concat(saveBlog._id) //new
-        await user.save() //new
+        user.blogs=user.blogs.concat(saveBlog._id) 
+        await user.save() 
         response.status(201).json(saveBlog)
    
 })
