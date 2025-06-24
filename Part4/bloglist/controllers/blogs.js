@@ -3,26 +3,23 @@ const jwt = require('jsonwebtoken')
 const { response } = require('../app')
 const Blog = require('../models/blog')
 const User = require('../models/user')//new
-// const getTokenFrom = request => {
-//   const authorization = request.get('authorization')
-//   if (authorization && authorization.startsWith('Bearer ')) {
-//     return authorization.replace('Bearer ', '')
-//   }
-//   return null
-// } //new
+const { tokenExtractor } = require('../utils/middleware')
+
 blogRouter.get('/', async (request, response) => {
         const blogs=await Blog.find({}).populate('userId', { username: 1, name: 1 ,id:1})
         response.json(blogs)
 
 })
 blogRouter.post('/', async(request, response) => {
+     console.log('Token from request:', request.token)
     const {title,author,url,likes,userId}=request.body
-    // const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
-    // if (!decodedToken.id) {
-    //     return response.status(401).json({ error: 'token invalid' })
-    // }
-    //const user = await User.findById(decodedToken.id)//new
-    const user=await User.findById(userId) 
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+   
+    if (!decodedToken.id) {
+        return response.status(401).json({ error: 'token invalid' })
+    }
+    const user = await User.findById(decodedToken.id)
+ 
     if (!user) {
     return response.status(400).json({ error: 'userId missing or not valid' })
     }//new
