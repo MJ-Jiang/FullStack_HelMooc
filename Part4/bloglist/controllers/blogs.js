@@ -64,8 +64,8 @@ blogRouter.delete('/:id', async (request, response) => {
 
     
 })
+//update likes
 blogRouter.put('/:id',async(request,response)=>{
-    
     const id=request.params.id
     console.log('Received update request with id:', id, typeof id)
     const {likes}=request.body
