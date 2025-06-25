@@ -11,14 +11,14 @@ blogRouter.get('/', async (request, response) => {
 
 })
 blogRouter.post('/', async(request, response) => {
-     console.log('Token from request:', request.token)
+     //console.log('Token from request:', request.token)
     const {title,author,url,likes,userId}=request.body
     const decodedToken = jwt.verify(request.token, process.env.SECRET)
    
     if (!decodedToken.id) {
         return response.status(401).json({ error: 'token invalid' })
     }
-    const user = await User.findById(decodedToken.id)
+    const user = await User.findById(decodedToken.id)  //user._id
  
     if (!user) {
     return response.status(400).json({ error: 'userId missing or not valid' })
@@ -32,7 +32,7 @@ blogRouter.post('/', async(request, response) => {
             author,
             url,
             likes:likes||0,
-            userId: user._id  //new
+            userId: user._id  //only contains the ID — not the rest of the user's info
 
         })
         const saveBlog=await blog.save()
@@ -42,16 +42,31 @@ blogRouter.post('/', async(request, response) => {
    
 })
 blogRouter.delete('/:id', async (request, response) => {
-    const id = request.params.id
-     console.log('Received delete request with id:', id, typeof id)
+    // console.log('DELETE /api/blogs/:id called')
+    //console.log('Token from request:', request.token)
+     //console.log('  ID in params:', request.params.id)
+    const token=request.token
+    if(!token){
+        return response.status(401).json({error:'token missing'})
+    }
+    let decodedToken
+    decodedToken=jwt.verify(token,process.env.SECRET)
+    if(!decodedToken.id){
+        return response.status(401).json({error:'token invalid'})
+    }
+    //console.log('token decoded id:', decodedToken.id) 
+    const blog = await Blog.findById(request.params.id)
+     //console.log('blog.userId:', blog.userId.toString())
+    if(!blog){
+        return response.status(401).json({error:'blog not found'})
+    }
+    if(blog.userId.toString()!==decodedToken.id){
+        return response.status(401).json({error:'unauthorized: only creator can delete the blog'})
+    }
+   
+    await Blog.findByIdAndDelete(request.params.id)
+    response.status(204).end()
 
-  
-        const deletedBlog = await Blog.findByIdAndDelete(id)
-        if (deletedBlog) {
-            return response.status(204).end()
-        } else {
-            return response.status(404).json({ error: 'blog not found' })
-        }
     
 })
 blogRouter.put('/:id',async(request,response)=>{

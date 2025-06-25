@@ -7,8 +7,8 @@ const blogSchema = mongoose.Schema({
     url: String,
     likes: Number,
     userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    type: mongoose.Schema.Types.ObjectId, //userId must be an ObjectId
+    ref: 'User' //reference a document in the 'User' collection
   }
 })
 blogSchema.set('toJSON',{
