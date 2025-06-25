@@ -37,6 +37,11 @@ const App = () => {
       }, 5000)
     }
   }
+  const handleLogout=async(event)=>{
+     event.preventDefault()
+     window.localStorage.removeItem('loggedNoteappUser')
+     setUser(null)
+  }
     
 
   useEffect(() => {
@@ -74,7 +79,11 @@ const App = () => {
     <div>
       {user === null ? loginForm() : <div>
         <h2>blogs</h2>
-        <p>{user.name} logged-in</p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <p>{user.username} logged-in</p>
+          <button onClick={handleLogout}>log out</button>
+        </div>
+       
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
         )}
