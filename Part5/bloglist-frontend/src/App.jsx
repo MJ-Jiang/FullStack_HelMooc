@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Notification from './components/Notification'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('') 
@@ -11,6 +12,7 @@ const App = () => {
   const[author,setAuthor]=useState('')
   const[url,setUrl]=useState('')
   const[errorMessage,setErrorMessage]=useState(null)
+  const[message,setMessage]=useState(null)
   
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
@@ -42,7 +44,8 @@ const App = () => {
       setPassword('')
       //If the login is successful, the form fields are emptied and the server response (including a token and the user details) is saved to the user field of the application's state.
     } catch (exception) {
-      setErrorMessage('Wrong credentials')
+      setMessage({text:"Wrong username or password",type:'error'})
+      setTimeout(()=>{setMessage(null)},5000)
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
@@ -63,6 +66,8 @@ const App = () => {
       setTitle('')
       setAuthor('')
       setUrl('')
+      setMessage({text:`A new blog "${title}" by ${author} added`,type:'success'})
+      setTimeout(()=>{setMessage(null)},5000)
 
     }catch(error){
       console.error('error creating blog:',error)
@@ -147,6 +152,7 @@ const App = () => {
 
   return (
     <div>
+      <Notification message={message} />
       {user === null ? loginForm() : loginState()}
     </div>
   )
