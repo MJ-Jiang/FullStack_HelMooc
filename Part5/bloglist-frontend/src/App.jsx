@@ -3,6 +3,9 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
+import CreateForm from './components/CreateForm'
+import LoginForm from './components/LoginForm'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('') 
@@ -11,9 +14,9 @@ const App = () => {
   const[title,setTitle]=useState('')
   const[author,setAuthor]=useState('')
   const[url,setUrl]=useState('')
-  const[errorMessage,setErrorMessage]=useState(null)
   const[message,setMessage]=useState(null)
-  
+  const [createVisible,setCreateVisible]=useState(false)
+ 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
     if (loggedUserJSON) {
@@ -46,9 +49,6 @@ const App = () => {
     } catch (exception) {
       setMessage({text:"Wrong username or password",type:'error'})
       setTimeout(()=>{setMessage(null)},5000)
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
     }
   }
   const handleLogout=async(event)=>{
@@ -75,85 +75,45 @@ const App = () => {
    
 
   }
-
-
-  const loginForm=()=>(
-    <form onSubmit={handleLogin}>
-      <div>
-        <h1>Log in to application</h1>
-        username
-          <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        password
-          <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type="submit">login</button>
-    </form>      
-  )
-  const loginState=()=>(
-
-  
+const loginState = () =>{
+  return(
     <div>
-        <h2>blogs</h2>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <p>{user.username} logged-in</p>
-          <button onClick={handleLogout}>log out</button>
-    </div>
-   
-    <h3>Create new</h3>
-    <form onSubmit={handleNewBlog}>
-      title:
-      <input 
-      type='text'
-      value={title}
-      name='title'
-      onChange={({target})=>setTitle(target.value)}
-      />
-      <br/>
-      author:
-       <input 
-      type='text'
-      value={author}
-      name='author'
-      onChange={({target})=>setAuthor(target.value)}
-      />
-       <br/>
-      url:
-       <input 
-      type='text'
-      value={url}
-      name='url'
-      onChange={({target})=>setUrl(target.value)}
-      />
-    
-      <br/>
-      <button type="submit">Create</button>
-      </form>
-    
-       
-        {blogs.map(blog =>
+      <h2>blogs</h2>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <p>{user.username} logged-in</p>
+        <button onClick={handleLogout}>log out</button>
+      </div>
+      <div>
+        <CreateForm
+            title={title}
+            author={author}
+            url={url}
+            setAuthor={setAuthor}
+            setTitle={setTitle}
+            setUrl={setUrl}
+            handleNewBlog={handleNewBlog}
+            />
+      </div>
+      {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
         )}
-      </div>
+    </div>
   )
-  
+    
+}
     
 
   return (
     <div>
       <Notification message={message} />
-      {user === null ? loginForm() : loginState()}
+      {user === null ? (<LoginForm
+                            username={username}
+                            password={password}
+                            handleLogin={handleLogin}
+                            setUsername={setUsername}
+                            setPassword={setPassword}
+        />
+      ) : loginState()}
     </div>
   )
 }
