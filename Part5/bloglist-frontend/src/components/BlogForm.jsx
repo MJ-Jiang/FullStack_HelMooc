@@ -1,4 +1,25 @@
-const CreateForm=({title,author,url,handleNewBlog,setAuthor,setTitle,setUrl})=>{
+import { useState } from "react"
+import blogService from '../services/blogs'
+const BlogForm=({setBlogs,blogs,setMessage})=>{
+    const[title,setTitle]=useState('')
+    const[author,setAuthor]=useState('')
+    const[url,setUrl]=useState('')
+
+    const handleNewBlog=async(event)=>{
+      event.preventDefault()
+      try{
+        const newBlog={title,author,url}
+        const returnedBlog=await blogService.create(newBlog)
+        setBlogs(blogs.concat(returnedBlog))
+        setTitle('')
+        setAuthor('')
+        setUrl('')
+        setMessage({text:`A new blog "${title}" by ${author} added`,type:'success'})
+        setTimeout(()=>{setMessage(null)},5000)
+      }catch(error){
+        console.error('error creating blog:',error)
+    }
+  }
     return (
         <div>
             <h3>Create new</h3>
@@ -32,7 +53,7 @@ const CreateForm=({title,author,url,handleNewBlog,setAuthor,setTitle,setUrl})=>{
             </form>
         </div>
     )
-    
 }
 
-export default CreateForm
+
+export default BlogForm

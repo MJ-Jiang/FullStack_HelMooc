@@ -1,21 +1,19 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect,useRef } from 'react'
 import Blog from './components/Blog'
-import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
-import Togglable from './components/Togglable'
-import CreateForm from './components/CreateForm'
+import blogService from './services/blogs'
 import LoginForm from './components/LoginForm'
+import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
+
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('') 
   const [user, setUser] = useState(null)
-  const[title,setTitle]=useState('')
-  const[author,setAuthor]=useState('')
-  const[url,setUrl]=useState('')
   const[message,setMessage]=useState(null)
-  const [createVisible,setCreateVisible]=useState(false)
+  const blogFormRef=useRef()
  
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
@@ -32,7 +30,6 @@ const App = () => {
   }, [])
   const handleLogin = async (event) => {
     event.preventDefault()
-    
     try {
       const user = await loginService.login({
         username, password,
@@ -56,64 +53,38 @@ const App = () => {
      window.localStorage.removeItem('loggedNoteappUser')
      setUser(null)
   }
-    
-  const handleNewBlog=async(event)=>{
-    event.preventDefault()
-    try{
-      const newBlog={title,author,url}
-      const returnedBlog=await  blogService.create(newBlog)
-      setBlogs(blogs.concat(returnedBlog))
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-      setMessage({text:`A new blog "${title}" by ${author} added`,type:'success'})
-      setTimeout(()=>{setMessage(null)},5000)
-
-    }catch(error){
-      console.error('error creating blog:',error)
-    }
-   
-
+  if(user===null){
+    return(
+      <div>
+        <Notification message={message} />
+        <LoginForm
+            username={username}
+            password={password}
+            handleLogin={handleLogin}
+            setUsername={setUsername}
+            setPassword={setPassword}
+          />
+        </div>
+    )
   }
-const loginState = () =>{
   return(
     <div>
+      <Notification message={message} />
       <h2>blogs</h2>
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
         <p>{user.username} logged-in</p>
         <button onClick={handleLogout}>log out</button>
       </div>
-      <div>
-        <CreateForm
-            title={title}
-            author={author}
-            url={url}
-            setAuthor={setAuthor}
-            setTitle={setTitle}
-            setUrl={setUrl}
-            handleNewBlog={handleNewBlog}
-            />
-      </div>
-      {blogs.map(blog =>
+      <Togglable buttonLabel="Create New Blog" ref={blogFormRef}>
+          <BlogForm
+              blogs={blogs}
+              setBlogs={setBlogs}
+              setMessage={setMessage}
+              />
+        </Togglable>
+           {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
         )}
-    </div>
-  )
-    
-}
-    
-
-  return (
-    <div>
-      <Notification message={message} />
-      {user === null ? (<LoginForm
-                            username={username}
-                            password={password}
-                            handleLogin={handleLogin}
-                            setUsername={setUsername}
-                            setPassword={setPassword}
-        />
-      ) : loginState()}
     </div>
   )
 }
