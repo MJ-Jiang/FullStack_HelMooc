@@ -3,10 +3,10 @@ const Notification = ({ message }) => {
     return null
   }
   const messageStyle={
-    color:message.type=='error'?'red':'green',
+    color:message.type==='error'?'red':'green',
     background:'lightgrey',
     fontStyle:'italic',
-    border: `2px solid ${message.type=='error'?'red':'green'}`
+    border: `2px solid ${message.type==='error'?'red':'green'}`
   }
   return (
     <div style={messageStyle}>
