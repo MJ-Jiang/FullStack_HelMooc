@@ -18,7 +18,7 @@ const Blog = ({ blog }) => {
       title:blog.title,
       author:blog.author,
       url:blog.url,
-      likes:blog.likes+1,
+      likes:likes+1,
       user:blog.user
       
     }
