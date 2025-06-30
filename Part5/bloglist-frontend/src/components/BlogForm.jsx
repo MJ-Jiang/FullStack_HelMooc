@@ -49,7 +49,7 @@ const BlogForm=({setBlogs,blogs,setMessage})=>{
                 />
     
                 <br/>
-                <button type="submit">Create</button>
+                <button type="submit" className="button">Create</button>
             </form>
         </div>
     )

@@ -14,6 +14,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   const[message,setMessage]=useState(null)
   const blogFormRef=useRef()
+  //offers a reference to the component.
  
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
@@ -71,9 +72,9 @@ const App = () => {
     <div>
       <Notification message={message} />
       <h2>blogs</h2>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-        <p>{user.username} logged-in</p>
-        <button onClick={handleLogout}>log out</button>
+      <div >
+        <p style={{ display: 'inline', marginRight: '10px'  }}>{user.username} logged-in</p>
+        <button className='button' onClick={handleLogout}>log out</button>
       </div>
       <Togglable buttonLabel="Create New Blog" ref={blogFormRef}>
           <BlogForm

@@ -1,6 +1,7 @@
 import { useState, useImperativeHandle, forwardRef } from 'react'
 
 const Togglable = forwardRef((props, ref) => {
+    //accept a ref from the parent. forwardRef allows you to pass the ref to a functional component like Togglable.
   const [visible, setVisible] = useState(false)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
@@ -15,6 +16,7 @@ const Togglable = forwardRef((props, ref) => {
       toggleVisibility
     }
   })
+  //When someone uses this ref, give them access to toggleVisibility
 
   return (
     <div>
@@ -22,12 +24,20 @@ const Togglable = forwardRef((props, ref) => {
         <button onClick={toggleVisibility}>{props.buttonLabel}</button>
       </div>
       <div style={showWhenVisible}>
-
         {props.children}
-        <button onClick={toggleVisibility}>cancel</button>
+        
+
+        <button className='button' onClick={toggleVisibility}>cancel</button>
       </div>
     </div>
   )
 })
 
 export default Togglable
+
+
+{/* <Togglable buttonLabel="Create New Blog">
+  <BlogForm />
+  //props.children = <BlogForm />
+  The child components are the React elements that we define between the opening and closing tags of a component.
+</Togglable> */}
