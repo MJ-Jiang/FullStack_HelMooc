@@ -17,7 +17,7 @@ const App = () => {
   //offers a reference to the component.
  
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
@@ -35,9 +35,9 @@ const App = () => {
       const user = await loginService.login({
         username, password,
       })
-      
+
       window.localStorage.setItem(
-        'loggedNoteappUser',JSON.stringify(user)
+        'loggedBlogappUser',JSON.stringify(user)
       )
       blogService.setToken(user.token)
       setUser(user)
@@ -51,9 +51,10 @@ const App = () => {
   }
   const handleLogout=async(event)=>{
      event.preventDefault()
-     window.localStorage.removeItem('loggedNoteappUser')
+     window.localStorage.removeItem('loggedBlogappUser')
      setUser(null)
   }
+
   if(user===null){
     return(
       <div>
@@ -87,7 +88,7 @@ const App = () => {
         {
           [...blogs]
           .sort((a,b)=>b.likes-a.likes)
-          .map(blog=><Blog key={blog.id} blog={blog}/>)
+          .map(blog=><Blog key={blog.id} blog={blog} user={user} setBlogs={setBlogs}/>)
         }
           
     </div>
