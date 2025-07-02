@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 import { expect } from 'vitest'
-import Togglable from './Togglable'
+
 test('renders title and author, but not url or likes by default',()=>{
     const blog={
         title:'Component testing is done with react-testing-library',
@@ -22,34 +22,19 @@ test('renders title and author, but not url or likes by default',()=>{
     expect(likes).toBeNull()
 })
 
-describe('<Togglable />', () => {
-  let container
-
-  beforeEach(() => {
-    container = render(
-      <Togglable buttonLabel="show...">
-        <div className="testDiv" >
-          togglable content
-        </div>
-      </Togglable>
-    ).container
-  })
-
-  test('renders its children', async () => {
-    await screen.findAllByText('togglable content')
-  })
-
-  test('at start the children are not displayed', () => {
-    const div = container.querySelector('.togglableContent')
-    expect(div).toHaveStyle('display: none')
-  })
-
-  test('after clicking the button, children are displayed', async () => {
-    const user = userEvent.setup()
-    const button = screen.getByText('show...')
+test('renders url and likes after showing details',async()=>{
+    const blog={
+        title:'Component testing is done with react-testing-library',
+        author:'Test-author',
+        url:'http://www.com',
+        likes:5
+    }
+    render(<Blog blog={blog}/>)
+    const user=userEvent.setup()
+    const button=screen.getByText('View')
     await user.click(button)
-
-    const div = container.querySelector('.togglableContent')
-    expect(div).not.toHaveStyle('display: none')
-  })
+    expect(screen.getByText('http://www.com')).toBeDefined()
+    expect(
+    screen.getByText((content) => content.includes('likes') && content.includes('5'))
+  ).toBeDefined()
 })
