@@ -12,7 +12,8 @@ const Blog = ({ blog,user,setBlogs }) => {
     paddingTop: 3,
     paddingLeft: 2,
     borderWidth: 1,
-    marginBottom: 3
+    marginBottom: 3,
+    border: '1px solid black',
   }
   const handleLike=async() => {
 
@@ -49,9 +50,9 @@ const Blog = ({ blog,user,setBlogs }) => {
   const isOwner = blog.user && (blog.user.id === user.id)
 
   return(
-    <div style={blogStyle}>
+    <div style={blogStyle} className="blog">
       <div>
-        {blog.title}
+        {blog.title} {blog.author}
         <button className='button' onClick={() => setShowDetails(!showDetails)}>
           {showDetails?'Hide':'View'}
         </button>
