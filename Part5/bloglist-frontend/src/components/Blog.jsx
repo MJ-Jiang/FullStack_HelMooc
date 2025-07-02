@@ -3,7 +3,7 @@ import '../App.css'
 import blogService from '../services/blogs'
 
 
-const Blog = ({ blog,user,setBlogs }) => {
+const Blog = ({ blog, user, setBlogs, onLike = () => {} }) => {
 
 
   const [showDetails, setShowDetails] = useState(false)
@@ -18,6 +18,7 @@ const Blog = ({ blog,user,setBlogs }) => {
   const handleLike=async() => {
 
     try{
+      onLike()
       const updatedBlog={
         title:blog.title,
         author:blog.author,
@@ -65,7 +66,7 @@ const Blog = ({ blog,user,setBlogs }) => {
             <p style={{ display: 'inline', marginRight: '10px', margin: 0 }}>
             likes {likes}
             </p>
-            <button className='button' onClick={handleLike}>like</button>
+            <button className='button' onClick={handleLike} aria-label="like-button">like</button>
           </div>
           <p style={{ margin: 0 }}>{blog.author}</p>
           {isOwner && <button className='button' onClick={handleRemove} style={{ backgroundColor: '#87CEFA' }}>remove</button>}

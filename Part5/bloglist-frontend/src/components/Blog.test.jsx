@@ -1,40 +1,77 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
-import { expect } from 'vitest'
+import { vi, expect, test, beforeEach } from 'vitest'
 
-test('renders title and author, but not url or likes by default',()=>{
-    const blog={
-        title:'Component testing is done with react-testing-library',
-        author:'Test-author',
-        url:'http://www.com',
-        likes:5
-    }
-    render(<Blog blog={blog} />)
-    const titleElement = screen.getByText(/Component testing is done with react-testing-library/)
-    const authorElement = screen.getByText(/Test-author/)
-    expect(titleElement).toBeDefined()
-    expect(authorElement).toBeDefined()
+vi.mock('../services/blogs', () => {
+  return {
+    __esModule: true,
+    //can use import blogService from '../services/blogs'
+    default: {
+      update: vi.fn((id, updatedBlog) => Promise.resolve({ ...updatedBlog, id })),
+      remove: vi.fn(() => Promise.resolve()),
+      //vi.fn(...) creates a fake function that can track the number of calls, parameters, and return the result you give.
+    },
+    //The mocked module exports a default object, which contains update and remove methods.
+  }
+})
+// vi.mock('mockpath', () => {
+//   return mockcontent
+// })
 
-    const url=screen.queryByText('http://www.com')
-    expect(url).toBeNull()
-    const likes=screen.queryByText(/likes/i)
-    expect(likes).toBeNull()
+//vi.mock(...) is a function used by Vitest to fake a module
+const initialBlog = {
+  id: '12345',
+  title: 'Component testing is done with react-testing-library',
+  author: 'Test-author',
+  url: 'http://www.com',
+  likes: 5,
+  user: { id: 'user1' },
+}
+const currentUser = { id: 'user1' }
+
+
+test('renders title and author, but not url or likes by default', () => {
+  render(<Blog blog={initialBlog} user={currentUser} />)
+
+  expect(screen.getByText(/Component testing is done with react-testing-library/i)).toBeDefined()
+  expect(screen.getByText(/Test-author/i)).toBeDefined()
+
+  expect(screen.queryByText(initialBlog.url)).toBeNull()
+  expect(screen.queryByText(/likes/i)).toBeNull()
+  //getByText will report an error if it cannot find the value, while queryByText will return null if it cannot find the value.
 })
 
-test('renders url and likes after showing details',async()=>{
-    const blog={
-        title:'Component testing is done with react-testing-library',
-        author:'Test-author',
-        url:'http://www.com',
-        likes:5
-    }
-    render(<Blog blog={blog}/>)
-    const user=userEvent.setup()
-    const button=screen.getByText('View')
-    await user.click(button)
-    expect(screen.getByText('http://www.com')).toBeDefined()
-    expect(
-    screen.getByText((content) => content.includes('likes') && content.includes('5'))
-  ).toBeDefined()
+
+test('renders url and likes after showing details', async () => {
+  render(<Blog blog={initialBlog} user={currentUser}/>)
+
+  const user = userEvent.setup()
+  const viewButton = screen.getByText('View')
+  await user.click(viewButton)
+
+  expect(screen.getByText(initialBlog.url)).toBeDefined()
+  expect(screen.getByText((content) => content.includes('likes') && content.includes(String(initialBlog.likes)))).toBeDefined()
+})
+
+
+test('if the like button is clicked twice, the event handler the component received as props is called twice', async () => {
+  const setBlogs = vi.fn()
+  const mockOnLike = vi.fn()
+
+  render(
+    <Blog
+      blog={initialBlog}
+      user={currentUser}
+      setBlogs={setBlogs}
+      onLike={mockOnLike}
+    />
+  )
+  const user = userEvent.setup()
+  const viewButton = screen.getByText('View')
+  await user.click(viewButton)
+  const likeButton = screen.getByRole('button', { name: /like-button/i })
+  await user.click(likeButton)
+  await user.click(likeButton)
+  expect(mockOnLike).toHaveBeenCalledTimes(2)
 })
