@@ -1,13 +1,15 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
-import { vi, expect, test, beforeEach } from 'vitest'
+import { vi, expect, test } from 'vitest'
+import BlogForm from './BlogForm'
 
 vi.mock('../services/blogs', () => {
   return {
     __esModule: true,
     //can use import blogService from '../services/blogs'
     default: {
+      create:vi.fn(newBlog => Promise.resolve({ ...newBlog,id:'555' })),
       update: vi.fn((id, updatedBlog) => Promise.resolve({ ...updatedBlog, id })),
       remove: vi.fn(() => Promise.resolve()),
       //vi.fn(...) creates a fake function that can track the number of calls, parameters, and return the result you give.
@@ -74,4 +76,42 @@ test('if the like button is clicked twice, the event handler the component recei
   await user.click(likeButton)
   await user.click(likeButton)
   expect(mockOnLike).toHaveBeenCalledTimes(2)
+})
+test('<BlogForm /> updates parent state and calls onSubmit',async() => {
+  const setBlogs=vi.fn()
+  const setMessage=vi.fn()
+  const blogs=[]
+
+  const user=userEvent.setup()
+
+  render(<BlogForm setBlogs={setBlogs} blogs={blogs} setMessage={setMessage}/>)
+  const title=screen.getByRole('textbox', { name:/title/i })
+  const author=screen.getByRole('textbox',{ name:/author/i })
+  const url=screen.getByRole('textbox',{ name:/url/i })
+  await user.type(title,'testTitle')
+  await user.type(author,'testAuthor')
+  await user.type(url,'http://www.test')
+
+  const createButton=screen.getByRole('button',{ name:/create/i })
+  await user.click(createButton)
+  expect(setBlogs).toHaveBeenCalledTimes(1)
+
+  const newBlogsArray=setBlogs.mock.calls[0][0]
+  expect(newBlogsArray).toHaveLength(1)
+  expect(newBlogsArray[0]).toMatchObject({
+    title:'testTitle',
+    author:'testAuthor',
+    url:'http://www.test'
+  })
+
+  expect(setMessage).toHaveBeenCalledTimes(1)
+  expect(setMessage.mock.calls[0][0]).toMatchObject(
+    {
+      text:expect.stringContaining('testTitle'),
+      type:'success'
+    }
+  )
+
+
+
 })

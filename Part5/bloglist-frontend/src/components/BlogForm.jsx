@@ -22,7 +22,7 @@ const BlogForm=({ setBlogs,blogs,setMessage }) => {
     }
   }
   return (
-    <div>
+    <div className='formDiv'>
       <h3>Create new</h3>
       <form onSubmit={handleNewBlog}>
                 title:
@@ -30,6 +30,7 @@ const BlogForm=({ setBlogs,blogs,setMessage }) => {
           type='text'
           value={title}
           name='title'
+          aria-label="title"
           onChange={({ target }) => setTitle(target.value)}
         />
         <br/>
@@ -38,6 +39,7 @@ const BlogForm=({ setBlogs,blogs,setMessage }) => {
           type='text'
           value={author}
           name='author'
+          aria-label="author"
           onChange={({ target }) => setAuthor(target.value)}
         />
         <br/>
@@ -46,11 +48,12 @@ const BlogForm=({ setBlogs,blogs,setMessage }) => {
           type='text'
           value={url}
           name='url'
+          aria-label="url"
           onChange={({ target }) => setUrl(target.value)}
         />
 
         <br/>
-        <button type="submit" className="button">Create</button>
+        <button type="submit" className="button" aria-label="create">Create</button>
       </form>
     </div>
   )
