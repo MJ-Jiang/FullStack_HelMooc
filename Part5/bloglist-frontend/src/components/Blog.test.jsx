@@ -77,6 +77,7 @@ test('if the like button is clicked twice, the event handler the component recei
   await user.click(likeButton)
   expect(mockOnLike).toHaveBeenCalledTimes(2)
 })
+
 test('<BlogForm /> updates parent state and calls onSubmit',async() => {
   const setBlogs=vi.fn()
   const setMessage=vi.fn()
