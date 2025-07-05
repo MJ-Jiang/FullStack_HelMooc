@@ -75,7 +75,7 @@ const App = () => {
       <h2>blogs</h2>
       <div >
         <p style={{ display: 'inline', marginRight: '10px'  }}>{user.username} logged-in</p>
-        <button className='button' onClick={handleLogout}>log out</button>
+        <button className='button' onClick={handleLogout} aria-label="logout-button" >log out</button>
       </div>
       <Togglable buttonLabel="Create New Blog" ref={blogFormRef}>
         <BlogForm

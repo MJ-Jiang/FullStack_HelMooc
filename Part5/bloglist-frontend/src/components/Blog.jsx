@@ -69,7 +69,7 @@ const Blog = ({ blog, user, setBlogs, onLike = () => {} }) => {
             <button className='button' onClick={handleLike} aria-label="like-button">like</button>
           </div>
           <p style={{ margin: 0 }}>{blog.author}</p>
-          {isOwner && <button className='button' onClick={handleRemove} style={{ backgroundColor: '#87CEFA' }}>remove</button>}
+          {isOwner && <button className='button' onClick={handleRemove} aria-label="remove-button" style={{ backgroundColor: '#87CEFA' }}>remove</button>}
         </div>
       )}
 

@@ -9,7 +9,8 @@ const Notification = ({ message }) => {
     border: `2px solid ${message.type==='error'?'red':'green'}`
   }
   return (
-    <div style={messageStyle}>
+    <div className={`${message.type}`}
+      style={messageStyle}>
       {message.text}
     </div>
   )
