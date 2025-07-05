@@ -10,6 +10,7 @@ const Notification = ({ message }) => {
   }
   return (
     <div className={`${message.type}`}
+      aria-label="notification-message"
       style={messageStyle}>
       {message.text}
     </div>
