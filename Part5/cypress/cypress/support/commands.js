@@ -9,7 +9,7 @@ Cypress.Commands.add('login', ({ username, password }) => {
 
 Cypress.Commands.add('createBlog', ({ title,author,url }) => {
   cy.request({
-    url: `${Cypress.env('BACKEND')}/api/blogs`,
+    url: `${Cypress.env('BACKEND')}/blogs`,
     method: 'POST',
     body: { title,author,url },
     headers: {

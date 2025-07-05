@@ -46,7 +46,6 @@ describe('Blog app', function() {
         author: 'a-test',
         url: 'http://example.com'
       })
-      cy.contains('A new blog "t-test" by a-test added')
       cy.contains('t-test a-test').should('be.visible')
     })
   })
@@ -121,10 +120,12 @@ describe('Blog app', function() {
     it('Blogs are ordered by likes', function() {
       cy.contains('t-test a-test').parent().contains('View').click()
       cy.contains('t-test a-test').parent().find('[aria-label="like-button"]').click()
+      cy.contains('t-test a-test').parent().should('contain.text', 'likes 1')
+
       cy.contains('t-test2 a-test2').parent().contains('View').click()
       cy.contains('t-test2 a-test2').parent().find('[aria-label="like-button"]').click()
+      cy.contains('t-test2 a-test2').parent().should('contain.text', 'likes 1')
       cy.contains('t-test2 a-test2').parent().find('[aria-label="like-button"]').click()
-      cy.contains('t-test a-test').parent().should('contain.text', 'likes 1')
       cy.contains('t-test2 a-test2').parent().should('contain.text', 'likes 2')
       cy.get('.blog').eq(0).should('contain.text', 't-test2 a-test2')
       cy.get('.blog').eq(1).should('contain.text', 't-test a-test')
