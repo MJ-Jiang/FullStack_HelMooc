@@ -1,7 +1,6 @@
 import {  useDispatch } from 'react-redux'
 import {useRef} from 'react'
 import { createAnecdote } from '../reducers/anecdoteReducer'
-
 const AnecdoteForm=()=>{
     const dispatch = useDispatch()
     const inputRef= useRef()
