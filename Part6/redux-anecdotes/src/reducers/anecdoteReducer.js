@@ -45,3 +45,16 @@ const reducer = (state = initialState, action) => {
 }
 
 export default reducer
+
+export const voteAndecdote=(id)=>{
+  return{
+    type:'VOTE',
+    payload:id
+  }
+}
+export const createAndecdote=(content)=>{
+  return {
+    type:'NEW_ANECDOTE',
+    payload:content
+  }
+}
