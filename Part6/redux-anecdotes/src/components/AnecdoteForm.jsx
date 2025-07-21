@@ -1,6 +1,7 @@
 import {  useDispatch } from 'react-redux'
 import {useRef} from 'react'
 import { createAnecdote } from '../reducers/anecdoteReducer'
+import { setNotificationWithTimeout } from '../reducers/notificationReducer'
 const AnecdoteForm=()=>{
     const dispatch = useDispatch()
     const inputRef= useRef()
@@ -11,6 +12,8 @@ const AnecdoteForm=()=>{
             return
         }
         dispatch(createAnecdote(content))
+
+        dispatch(setNotificationWithTimeout(`'${content}' has been created`,5));
         inputRef.current.value = ''
   }
     return (
