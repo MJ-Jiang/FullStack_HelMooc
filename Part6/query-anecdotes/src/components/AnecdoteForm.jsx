@@ -6,23 +6,26 @@ const AnecdoteForm = () => {
   const [,dispatch]=useNotification()
   const newAnecdoteMutation=useMutation({
     mutationFn:createAnecdote,
-    onSuccess:()=>{
+    onSuccess:(newAnecdote)=>{
       queryClient.invalidateQueries({queryKey:['anecdotes']})
+      dispatch({type:'SET',payload:`you created '${newAnecdote.content}'`})
+    setTimeout(() => {
+      dispatch({ type: 'CLEAR' })
+    }, 5000)
+    },
+    onError:(error)=>{
+      dispatch({type:'SET',payload:`too short anecdote, must have length 5 or more`})
+      setTimeout(()=>{
+        dispatch({type:'CLEAR'})
+      },5000)
     }
   })
   const onCreate = (event) => {
     event.preventDefault()
     const content = event.target.anecdote.value
     event.target.anecdote.value = ''
-    if(content.length<5){
-      console.log('Anecodte must be at least 5 characters')
-      return
-    }
     newAnecdoteMutation.mutate({content,votes:0})
-    dispatch({type:'SET',payload:`you created '${content}'`})
-    setTimeout(() => {
-      dispatch({ type: 'CLEAR' })
-    }, 5000)
+    
 
 }
 

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 
 const NotificationContext = createContext()
 /*createContext() creates a global shared object called Context.
-
 It is like a "state container" that allows to share data between different components without having to pass it layer by layer with props.
 */
 const notificationReducer = (state, action) => {
