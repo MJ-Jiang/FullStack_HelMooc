@@ -17,6 +17,11 @@ const CreateNew = (props) => {
     })
     navigate('/')
   }
+  const handleReset=()=>{
+    content.reset()
+    author.reset()
+    info.reset()
+  }
   const omitReset=({reset,...rest})=>rest
 
   return (
@@ -35,7 +40,12 @@ const CreateNew = (props) => {
           url for more info
           <input name='info' {...omitReset(info)}  />
         </div>
-        <button>create</button>
+        <div>
+             <button type="submit">create</button>
+             <button type="button" onClick={handleReset}>reset</button>
+        </div>
+       
+
       </form>
     </div>
   )
