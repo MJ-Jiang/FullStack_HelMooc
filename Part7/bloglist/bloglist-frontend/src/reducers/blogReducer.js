@@ -41,13 +41,13 @@ export const likeBlog = (blog) => async (dispatch) => {
     const updatedBlog = {
         ...blog,
         likes: blog.likes + 1,
-        user: blog.user.id || blog.user,
+        user: blog.user.id || blog.user, //send to backend
     }
     const returnedBlog = await blogService.update(blog.id, updatedBlog)
     const fixedBlog = {
         ...returnedBlog,
         user: blog.user,
-    }
+    } //put in Redux
     dispatch(updateBlog(fixedBlog))
 }
 export const removeBlog = (id) => async (dispatch) => {
