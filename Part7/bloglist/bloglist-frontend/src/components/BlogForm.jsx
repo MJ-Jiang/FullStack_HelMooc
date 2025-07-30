@@ -3,7 +3,8 @@ import blogService from '../services/blogs'
 import PropTypes from 'prop-types'
 import { useDispatch } from 'react-redux'
 import { showNotification } from '../reducers/notificationReducer'
-const BlogForm = ({ setBlogs, blogs}) => {
+import {createBlog} from '../reducers/blogReducer'
+const BlogForm = () => {
     const [title, setTitle] = useState('')
     const [author, setAuthor] = useState('')
     const [url, setUrl] = useState('')
@@ -12,8 +13,8 @@ const BlogForm = ({ setBlogs, blogs}) => {
         event.preventDefault()
         try {
             const newBlog = { title, author, url }
-            const returnedBlog = await blogService.create(newBlog)
-            setBlogs(blogs.concat(returnedBlog))
+            const returnedBlog = await dispatch(createBlog(newBlog))
+           // setBlogs(blogs.concat(returnedBlog))
             setTitle('')
             setAuthor('')
             setUrl('')
@@ -60,9 +61,4 @@ const BlogForm = ({ setBlogs, blogs}) => {
         </div>
     )
 }
-BlogForm.propTypes = {
-    setBlogs: PropTypes.func.isRequired,
-    blogs: PropTypes.array.isRequired,
-}
-
 export default BlogForm

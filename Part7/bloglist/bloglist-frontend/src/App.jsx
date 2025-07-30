@@ -6,10 +6,11 @@ import blogService from './services/blogs'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
-import { useDispatch } from 'react-redux'
+import { useDispatch,useSelector } from 'react-redux'
 import { showNotification } from './reducers/notificationReducer'
+import { initializeBlogs } from './reducers/blogReducer'
 const App = () => {
-    const [blogs, setBlogs] = useState([])
+    //const [blogs, setBlogs] = useState([])
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [user, setUser] = useState(null)
@@ -17,7 +18,7 @@ const App = () => {
     const blogFormRef = useRef()
     //offers a reference to the component.
     const dispatch = useDispatch()
-
+    const blogs=useSelector((state)=>state.blogs)
     useEffect(() => {
         const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
         if (loggedUserJSON) {
@@ -26,9 +27,12 @@ const App = () => {
             blogService.setToken(user.token)
         }
     }, [])
-    useEffect(() => {
-        blogService.getAll().then((blogs) => setBlogs(blogs))
-    }, [])
+    // useEffect(() => {
+    //     blogService.getAll().then((blogs) => setBlogs(blogs))
+    // }, [])
+    useEffect(()=>{
+        dispatch(initializeBlogs())
+    },[dispatch])
     const handleLogin = async (event) => {
         event.preventDefault()
         try {
@@ -87,10 +91,7 @@ const App = () => {
                 </button>
             </div>
             <Togglable buttonLabel="Create New Blog" ref={blogFormRef}>
-                <BlogForm
-                    blogs={blogs}
-                    setBlogs={setBlogs}
-                />
+                <BlogForm />
             </Togglable>
 
             {[...blogs]
@@ -100,7 +101,6 @@ const App = () => {
                         key={blog.id}
                         blog={blog}
                         user={user}
-                        setBlogs={setBlogs}
                     />
                 ))}
         </div>
