@@ -3,8 +3,7 @@ import axios from "axios"
 
 const useResource = (baseUrl) => {
   const [resources, setResources] = useState([])
-
-  useEffect(()=>{
+/*When the component is loaded (or when baseUrl changes), a GET request is sent to the server to obtain all resources and save them to the resources state.*/  useEffect(()=>{
     axios.get(baseUrl).then(response=>{
         setResources(response.data)
     })

@@ -5,6 +5,7 @@ import useCountry from './hooks/useCountry'
 
 
 const Country = ({ country }) => {
+  /*From the <Country country={someData} /> component call, get props.country;*/
   if (!country) {
     return null
   }
