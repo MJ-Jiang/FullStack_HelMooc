@@ -3,22 +3,30 @@ import blogService from '../services/blogs'
 import PropTypes from 'prop-types'
 import { useDispatch } from 'react-redux'
 import { showNotification } from '../reducers/notificationReducer'
-import {createBlog} from '../reducers/blogReducer'
+import { createBlog } from '../reducers/blogReducer'
 const BlogForm = () => {
     const [title, setTitle] = useState('')
     const [author, setAuthor] = useState('')
     const [url, setUrl] = useState('')
-    const dispatch=useDispatch()
+    const dispatch = useDispatch()
     const handleNewBlog = async (event) => {
         event.preventDefault()
         try {
             const newBlog = { title, author, url }
-            const returnedBlog = await dispatch(createBlog(newBlog))
-           // setBlogs(blogs.concat(returnedBlog))
+            await dispatch(createBlog(newBlog))
+            // setBlogs(blogs.concat(returnedBlog))
             setTitle('')
             setAuthor('')
             setUrl('')
-            dispatch(showNotification({text:`A new blog "${title}" by ${author} added`,type:'success'}))
+            dispatch(
+                showNotification(
+                    {
+                        text: `A new blog "${title}" by ${author} added`,
+                        type: 'success',
+                    },
+                    5
+                )
+            )
         } catch (error) {
             console.error('error creating blog:', error)
         }

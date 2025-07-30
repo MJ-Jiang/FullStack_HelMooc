@@ -1,10 +1,14 @@
 import { useState } from 'react'
 import '../App.css'
 import blogService from '../services/blogs'
+import { useDispatch } from 'react-redux'
+import { likeBlog, removeBlog } from '../reducers/blogReducer'
+import { showNotification } from '../reducers/notificationReducer'
 
-const Blog = ({ blog, user, setBlogs, onLike = () => {} }) => {
+const Blog = ({ blog, user }) => {
+    const dispatch = useDispatch()
     const [showDetails, setShowDetails] = useState(false)
-    const [likes, setLikes] = useState(blog.likes)
+    //const [likes, setLikes] = useState(blog.likes)
     const blogStyle = {
         paddingTop: 3,
         paddingLeft: 2,
@@ -12,24 +16,27 @@ const Blog = ({ blog, user, setBlogs, onLike = () => {} }) => {
         marginBottom: 3,
         border: '1px solid black',
     }
-    const handleLike = async () => {
-        try {
-            onLike()
-            const updatedBlog = {
-                title: blog.title,
-                author: blog.author,
-                url: blog.url,
-                likes: likes + 1,
-            }
-            //console.log('blog.user:', blog.user)
-            const returnedBlog = await blogService.update(blog.id, updatedBlog)
-            setLikes(returnedBlog.likes)
-            setBlogs((blogs) =>
-                blogs.map((b) => (b.id === returnedBlog.id ? returnedBlog : b))
-            )
-        } catch (error) {
-            console.error('Error liking the blog:', error)
-        }
+    // const handleLike = async () => {
+    //     try {
+    //         onLike()
+    //         const updatedBlog = {
+    //             title: blog.title,
+    //             author: blog.author,
+    //             url: blog.url,
+    //             likes: likes + 1,
+    //         }
+    //         //console.log('blog.user:', blog.user)
+    //         const returnedBlog = await blogService.update(blog.id, updatedBlog)
+    //         setLikes(returnedBlog.likes)
+    //         setBlogs((blogs) =>
+    //             blogs.map((b) => (b.id === returnedBlog.id ? returnedBlog : b))
+    //         )
+    //     } catch (error) {
+    //         console.error('Error liking the blog:', error)
+    //     }
+    // }
+    const handleLike = () => {
+        dispatch(likeBlog(blog))
     }
     const handleRemove = async () => {
         const confirmRemove = window.confirm(
@@ -37,12 +44,24 @@ const Blog = ({ blog, user, setBlogs, onLike = () => {} }) => {
         )
         if (!confirmRemove) return
         try {
-            await blogService.remove(blog.id, user.token)
-            setBlogs((currentBlogs) =>
-                currentBlogs.filter((b) => b.id !== blog.id)
+            // await blogService.remove(blog.id, user.token)
+            // setBlogs((currentBlogs) =>
+            //     currentBlogs.filter((b) => b.id !== blog.id)
+            // )
+            dispatch(removeBlog(blog.id))
+            dispatch(
+                showNotification(
+                    { text: 'Blog deleted successfully', type: 'success' },
+                    5
+                )
             )
         } catch (error) {
-            console.error('Error removing the blog', error)
+            dispatch(
+                showNotification(
+                    { text: 'Failed to delete blog', type: 'error' },
+                    5
+                )
+            )
         }
     }
 
@@ -71,7 +90,7 @@ const Blog = ({ blog, user, setBlogs, onLike = () => {} }) => {
                                 margin: 0,
                             }}
                         >
-                            likes {likes}
+                            likes {blog.likes}
                         </p>
                         <button
                             className="button"

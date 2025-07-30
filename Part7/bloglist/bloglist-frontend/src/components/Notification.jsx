@@ -1,6 +1,6 @@
-import { useSelector } from "react-redux"
+import { useSelector } from 'react-redux'
 const Notification = () => {
-    const message =useSelector((state)=>state.notification)
+    const message = useSelector((state) => state.notification)
     //Switch from receiving props to getting messages directly from Redux
     if (message === null) {
         return null

@@ -6,7 +6,7 @@ import blogService from './services/blogs'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
-import { useDispatch,useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { showNotification } from './reducers/notificationReducer'
 import { initializeBlogs } from './reducers/blogReducer'
 const App = () => {
@@ -18,7 +18,7 @@ const App = () => {
     const blogFormRef = useRef()
     //offers a reference to the component.
     const dispatch = useDispatch()
-    const blogs=useSelector((state)=>state.blogs)
+    const blogs = useSelector((state) => state.blogs)
     useEffect(() => {
         const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
         if (loggedUserJSON) {
@@ -30,9 +30,9 @@ const App = () => {
     // useEffect(() => {
     //     blogService.getAll().then((blogs) => setBlogs(blogs))
     // }, [])
-    useEffect(()=>{
+    useEffect(() => {
         dispatch(initializeBlogs())
-    },[dispatch])
+    }, [dispatch])
     const handleLogin = async (event) => {
         event.preventDefault()
         try {
@@ -51,7 +51,15 @@ const App = () => {
             setPassword('')
             //If the login is successful, the form fields are emptied and the server response (including a token and the user details) is saved to the user field of the application's state.
         } catch (exception) {
-            dispatch(showNotification({text:'Wrong username or password',type:'error'}))
+            dispatch(
+                showNotification(
+                    {
+                        text: 'Wrong username or password',
+                        type: 'error',
+                    },
+                    5
+                )
+            )
         }
     }
     const handleLogout = async (event) => {
@@ -97,11 +105,7 @@ const App = () => {
             {[...blogs]
                 .sort((a, b) => b.likes - a.likes)
                 .map((blog) => (
-                    <Blog
-                        key={blog.id}
-                        blog={blog}
-                        user={user}
-                    />
+                    <Blog key={blog.id} blog={blog} user={user} />
                 ))}
         </div>
     )
