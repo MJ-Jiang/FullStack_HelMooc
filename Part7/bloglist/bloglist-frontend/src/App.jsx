@@ -6,15 +6,17 @@ import blogService from './services/blogs'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
-
+import { useDispatch } from 'react-redux'
+import { showNotification } from './reducers/notificationReducer'
 const App = () => {
     const [blogs, setBlogs] = useState([])
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [user, setUser] = useState(null)
-    const [message, setMessage] = useState(null)
+    //const [message, setMessage] = useState(null)
     const blogFormRef = useRef()
     //offers a reference to the component.
+    const dispatch = useDispatch()
 
     useEffect(() => {
         const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -45,10 +47,7 @@ const App = () => {
             setPassword('')
             //If the login is successful, the form fields are emptied and the server response (including a token and the user details) is saved to the user field of the application's state.
         } catch (exception) {
-            setMessage({ text: 'Wrong username or password', type: 'error' })
-            setTimeout(() => {
-                setMessage(null)
-            }, 5000)
+            dispatch(showNotification({text:'Wrong username or password',type:'error'}))
         }
     }
     const handleLogout = async (event) => {
@@ -60,7 +59,7 @@ const App = () => {
     if (user === null) {
         return (
             <div>
-                <Notification message={message} />
+                <Notification />
                 <LoginForm
                     username={username}
                     password={password}
@@ -73,7 +72,7 @@ const App = () => {
     }
     return (
         <div>
-            <Notification message={message} />
+            <Notification />
             <h2>blogs</h2>
             <div>
                 <p style={{ display: 'inline', marginRight: '10px' }}>
@@ -91,7 +90,6 @@ const App = () => {
                 <BlogForm
                     blogs={blogs}
                     setBlogs={setBlogs}
-                    setMessage={setMessage}
                 />
             </Togglable>
 
