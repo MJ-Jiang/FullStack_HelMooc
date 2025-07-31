@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs } from './reducers/blogReducer'
 import { setUser, clearUser } from './reducers/userReducer'
 import Users from './components/Users'
+import UserDetail from './components/UserDetail'
 import {
   BrowserRouter as Router,
   Routes,
@@ -89,6 +90,7 @@ const App = () => {
             <Routes>
                 <Route path="/" element={blogView}></Route>
                 <Route path="/users" element={<Users />}></Route>
+                <Route path="/users/:id" element={<UserDetail/>}></Route>
             </Routes>
             </div>
         </Router>
