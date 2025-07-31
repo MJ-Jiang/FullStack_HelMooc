@@ -56,8 +56,8 @@ const App = () => {
     }
     const blogView=(
         <div>
-            <h2>blogs</h2>            
-            <Togglable buttonLabel="Create New Blog" ref={blogFormRef}>
+            <h2>blog app</h2>            
+            <Togglable buttonLabel="create new" ref={blogFormRef}>
                 <BlogForm />
             </Togglable>
             {[...blogs]
