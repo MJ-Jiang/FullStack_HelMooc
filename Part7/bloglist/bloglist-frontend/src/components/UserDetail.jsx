@@ -1,6 +1,8 @@
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 const UserDetail=()=>{
+    console.log('BlogDetail rendered!')
     const {id}=useParams()
     const user=useSelector((state)=>state.users.find((u)=>u.id===id))
 
@@ -11,7 +13,8 @@ const UserDetail=()=>{
             <h4>Added blogs</h4>
             <ul>
                 {user.blogs.map((blog)=>(
-                    <li key={blog.id}>{blog.title}</li>
+                    <li key={blog.id}>
+                        <Link to={`/blogs/${blog.id}`}>{blog.title}</Link></li>
                 ))}
             </ul>
 

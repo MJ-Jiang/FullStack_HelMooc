@@ -10,6 +10,7 @@ import { initializeBlogs } from './reducers/blogReducer'
 import { setUser, clearUser } from './reducers/userReducer'
 import Users from './components/Users'
 import UserDetail from './components/UserDetail'
+import BlogDetail from './components/BlogDetail'
 import {
   BrowserRouter as Router,
   Routes,
@@ -71,6 +72,7 @@ const App = () => {
         <Router>
             <div>
             <Notification /> 
+            <h2>blogs</h2>
             <div>
                 <p style={{ display: 'inline', marginRight: '10px' }}>
                     {user.username} logged-in
@@ -91,6 +93,7 @@ const App = () => {
                 <Route path="/" element={blogView}></Route>
                 <Route path="/users" element={<Users />}></Route>
                 <Route path="/users/:id" element={<UserDetail/>}></Route>
+                 <Route path="/blogs/:id" element={<BlogDetail/>}></Route>
             </Routes>
             </div>
         </Router>
