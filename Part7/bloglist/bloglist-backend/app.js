@@ -19,6 +19,7 @@ app.use(middleware.tokenExtractor)
 app.use('/api/blogs', blogsRouter)
 app.use('/api/login', loginRouter)
 app.use('/api/users', usersRouter)
+
 console.log('NODE_ENV is:', process.env.NODE_ENV)
 if (process.env.NODE_ENV === 'test') {
     console.log('Enabling testing router')
