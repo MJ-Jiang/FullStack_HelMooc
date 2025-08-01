@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { likeBlog, addComment } from '../reducers/blogReducer'
 import { useState } from 'react'
+import { Card, Button, Form, InputGroup, ListGroup } from 'react-bootstrap'
 const BlogDetail = () => {
     const { id } = useParams()
     const blog = useSelector((state) => state.blogs.find((b) => b.id === id))
@@ -21,33 +22,40 @@ const BlogDetail = () => {
         }
     }
     return (
-        <div style={{ padding: 10, marginTop: 10 }}>
-            <h2>
-                {blog.title} {blog.author}
+        <div className='d-flex justify-content-center mt-4'>
+            <Card style={{width:'100%',maxWidth:'720px'}} className="p-4 shadow-sm">
+                <Card.Body>            <h2 className='fw-bold'>
+                {blog.title}<small className='text-muted'> {blog.author}</small>
             </h2>
             <p>
                 <a href={blog.url} target="_blank" rel="noopener noreferrer">
                     {blog.url}
                 </a>
             </p>
-            <p>
-                {blog.likes} likes <button onClick={handleLike}>like</button>
-            </p>
-            <p>added by {blog.user.username}</p>
-            <h3>Comments</h3>
-            <form onSubmit={handleComment}>
-                <input
+            <div className='d-flex align-items-center gap-2 mb-2'>
+                <span>{blog.likes} likes</span> 
+                <Button variant="outline-primary" size="sm" onClick={handleLike}>like</Button>
+            </div>
+            <p className='text-muted'>added by {blog.user.username}</p>
+            <h4 className='mt-4'>Comments</h4>
+            <Form onSubmit={handleComment}>
+                <InputGroup className='mb-3'>
+                    <Form.Control
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                     placeholder="Leave a comment... "
                 />
-                <button type="submit">add comment</button>
-            </form>
-            <ul>
+                <Button type="submit" variant="primary">add comment</Button>
+                </InputGroup>
+            </Form>
+            <ListGroup>
                 {blog.comments.map((c, index) => (
-                    <li key={index}>{c}</li>
+                    <ListGroup.Item key={index}>{c}</ListGroup.Item>
                 ))}
-            </ul>
+            </ListGroup>
+                </Card.Body>
+            </Card>
+
         </div>
     )
 }
