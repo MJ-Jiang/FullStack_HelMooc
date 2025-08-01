@@ -7,10 +7,14 @@ import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs } from './reducers/blogReducer'
-import { setUser, clearUser } from './reducers/userReducer'
+import { setUser } from './reducers/userReducer'
 import Users from './components/Users'
 import UserDetail from './components/UserDetail'
 import BlogDetail from './components/BlogDetail'
+import Navigation from './components/Navigation'
+import Card from 'react-bootstrap/Card'
+import { Row, Col } from 'react-bootstrap'
+
 import {
   BrowserRouter as Router,
   Routes,
@@ -38,14 +42,6 @@ const App = () => {
     useEffect(() => {
         dispatch(initializeBlogs())
     }, [dispatch])
-
-
-    const handleLogout = async (event) => {
-        event.preventDefault()
-        window.localStorage.removeItem('loggedBlogappUser')
-        dispatch(clearUser())
-    }
-
     if (user === null) {
         return (
             <div>
@@ -54,41 +50,41 @@ const App = () => {
             </div>
         )
     }
-    const blogView=(
-        <div>
-            <h2>blog app</h2>            
-            <Togglable buttonLabel="create new" ref={blogFormRef}>
-                <BlogForm />
+    const blogView = (
+  <div className="container mt-4">
+    <Card className="mb-4 shadow-sm">
+      <Card.Body>
+        <Row className="align-items-start">
+          <Col md={4}>
+            <h2 className="fw-bold">Blog App</h2>
+          </Col>
+          <Col md={8}>
+            <Togglable buttonLabel="Create new" ref={blogFormRef}>
+              {(toggleVisibility)=><BlogForm onCancel={toggleVisibility} />}
             </Togglable>
-            {[...blogs]
-                .sort((a, b) => b.likes - a.likes)
-                .map((blog) => (
-                    <Blog key={blog.id} blog={blog} />
-                ))}
-        </div>
-    )
+          </Col>
+        </Row>
+      </Card.Body>
+    </Card>
+
+    {[...blogs]
+      .sort((a, b) => b.likes - a.likes)
+      .map((blog) => (
+        <Card className="mb-3" key={blog.id}>
+          <Card.Body>
+            <Blog blog={blog} />
+          </Card.Body>
+        </Card>
+      ))}
+  </div>
+)
+
 
     return (
         <Router>
             <div>
             <Notification /> 
-            <h2>blogs</h2>
-            <div>
-                <p style={{ display: 'inline', marginRight: '10px' }}>
-                    {user.username} logged-in
-                </p>
-                <button
-                    className="button"
-                    onClick={handleLogout}
-                    aria-label="logout-button"
-                >
-                    log out
-                </button>
-            </div>
-            <nav style={{margin:'1em 0'}}>
-                <Link to="/" style={{marginRight:'1em'}}>blogs</Link>
-                <Link to="/users">users</Link>
-            </nav>
+            <Navigation />
             <Routes>
                 <Route path="/" element={blogView}></Route>
                 <Route path="/users" element={<Users />}></Route>

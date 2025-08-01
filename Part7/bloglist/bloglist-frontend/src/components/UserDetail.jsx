@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 const UserDetail=()=>{
-    console.log('BlogDetail rendered!')
+ 
     const {id}=useParams()
     const user=useSelector((state)=>state.users.find((u)=>u.id===id))
 

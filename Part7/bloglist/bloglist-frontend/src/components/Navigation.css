@@ -1,0 +1,23 @@
+.custom-nav {
+  background-color: #111;
+  padding: 0.5em 1em;
+  gap: 1.5em;
+}
+
+.custom-nav .nav-link {
+  color: white;
+  font-weight: 500;
+  padding: 0.5em 1em;
+  border-radius: 8px;
+  transition: background 0.3s;
+}
+
+.custom-nav .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  text-decoration: none;
+}
+
+.custom-nav .nav-link.active {
+  background-color: #0d6efd; 
+  color: white !important;
+}
