@@ -84,16 +84,19 @@ const App = () => {
                 <Notification />
                 <Navigation />
                 <Container className="mt-4">
-
-   <Routes>
-                    <Route path="/" element={blogView}></Route>
-                    <Route path="/users" element={<Users />}></Route>
-                    <Route path="/users/:id" element={<UserDetail />}></Route>
-                    <Route path="/blogs/:id" element={<BlogDetail />}></Route>
-                </Routes>
-
-</Container>
-                
+                    <Routes>
+                        <Route path="/" element={blogView}></Route>
+                        <Route path="/users" element={<Users />}></Route>
+                        <Route
+                            path="/users/:id"
+                            element={<UserDetail />}
+                        ></Route>
+                        <Route
+                            path="/blogs/:id"
+                            element={<BlogDetail />}
+                        ></Route>
+                    </Routes>
+                </Container>
             </div>
         </Router>
     )

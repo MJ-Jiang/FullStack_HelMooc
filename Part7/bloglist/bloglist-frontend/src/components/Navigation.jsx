@@ -16,8 +16,8 @@ const Navigation = () => {
         window.localStorage.removeItem('loggedBlogappUser')
         dispatch(clearUser())
     }
-    const isUserRoute=location.pathname.startsWith('/users')
-    const isBlogRoute=location.pathname.startsWith('/blogs')
+    const isUserRoute = location.pathname.startsWith('/users')
+    const isBlogRoute = location.pathname.startsWith('/blogs')
 
     return (
         <Navbar bg="dark" variant="dark" className="px-3 mb-3" expand="sm">
@@ -28,7 +28,11 @@ const Navigation = () => {
             >
                 <Nav.Item as="li">
                     <LinkContainer to="/">
-                        <Nav.Link active={location.pathname==='/' || isBlogRoute}>Blogs</Nav.Link>
+                        <Nav.Link
+                            active={location.pathname === '/' || isBlogRoute}
+                        >
+                            Blogs
+                        </Nav.Link>
                     </LinkContainer>
                 </Nav.Item>
                 <Nav.Item as="li">
