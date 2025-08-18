@@ -114,6 +114,7 @@ const typeDefs = `
   }
 `
 //allBooks(author:String)....author optional argument 
+// allAuthors:[Author!]!, inner !:Each element in the array must not be null. outer !:The array itself must not be null.
 const resolvers = {
   Query: {
     booksCount: () => books.length,
