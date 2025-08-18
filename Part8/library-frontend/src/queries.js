@@ -8,3 +8,12 @@ export const All_AUTHORS = gql`
   }
 }
 `
+export const All_BOOKS = gql`
+ query{
+    allBooks{   
+        title   
+        author
+        published
+    }
+ }
+`
