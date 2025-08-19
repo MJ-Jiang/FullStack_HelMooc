@@ -10,6 +10,7 @@ const NewBook = ({show}) => {
   const [genres, setGenres] = useState([])
   const [addBook]= useMutation(ADD_BOOK, {
     refetchQueries: [{ query: All_BOOKS }, { query: All_AUTHORS }],
+    awaitRefetchQueries: true,
         onError: (error) => {
           console.error("Error adding book:", error);
     }
@@ -24,13 +25,13 @@ const NewBook = ({show}) => {
     if(!g) {
       return
     }
-    setGenres(genres.concat(g))
+    setGenres(prev=>[...prev, g]) //each call gets the freshest state
     setGenre('')  
   }
   const submit = async (event) => {
     event.preventDefault()
     const publishedNumber=parseInt(published,10)
-    if(!title || !author || isNaN(publishedNumber) || genres.length === 0) {
+    if(!title.trim() || !author.trim() || Number.isNaN(publishedNumber)) {
       console.error("All fields are required and published must be a number.")
       return
     }
@@ -41,8 +42,7 @@ const NewBook = ({show}) => {
         author:author.trim(), 
         published: publishedNumber, 
         genres 
-      },refetchQueries: [{ query: All_BOOKS }, { query: All_AUTHORS }],  
-      awaitRefetchQueries:true,
+      }
     });
     setTitle('')
     setPublished('')

@@ -36,6 +36,20 @@ export const ADD_BOOK = gql`
     genres
   }   
 }`
+export const EDIT_AUTHOR=gql`
+  mutation EditAuthor(
+    $name: String!
+    $setBornTo: Int!
+  ) {
+    editAuthor(
+      name: $name,
+      setBornTo: $setBornTo
+    ) {
+      name
+      born
+    }
+  }
+`
 
 //AddBook is the operation name, for debugging/devtools/logs
 //addBook is the mutation field name, used in the useMutation hook
