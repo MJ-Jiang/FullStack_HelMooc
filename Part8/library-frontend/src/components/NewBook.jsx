@@ -1,21 +1,49 @@
 import { useState } from 'react'
+import { useMutation } from "@apollo/client";
+import { All_AUTHORS, ADD_BOOK, All_BOOKS } from "../queries";
 
-const NewBook = (props) => {
+const NewBook = ({show}) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [published, setPublished] = useState('')
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
+  const [addBook]= useMutation(ADD_BOOK, {
+    refetchQueries: [{ query: All_BOOKS }, { query: All_AUTHORS }],
+        onError: (error) => {
+          console.error("Error adding book:", error);
+    }
+  });
 
-  if (!props.show) {
+  if (!show) {
     return null
   }
 
+  const addGenre=()=>{
+    const g=genre.trim()
+    if(!g) {
+      return
+    }
+    setGenres(genres.concat(g))
+    setGenre('')  
+  }
   const submit = async (event) => {
     event.preventDefault()
+    const publishedNumber=parseInt(published,10)
+    if(!title || !author || isNaN(publishedNumber) || genres.length === 0) {
+      console.error("All fields are required and published must be a number.")
+      return
+    }
 
-    console.log('add book...')
-
+    await addBook({
+       variables: { 
+        title:title.trim(),
+        author:author.trim(), 
+        published: publishedNumber, 
+        genres 
+      },refetchQueries: [{ query: All_BOOKS }, { query: All_AUTHORS }],  
+      awaitRefetchQueries:true,
+    });
     setTitle('')
     setPublished('')
     setAuthor('')
@@ -23,10 +51,6 @@ const NewBook = (props) => {
     setGenre('')
   }
 
-  const addGenre = () => {
-    setGenres(genres.concat(genre))
-    setGenre('')
-  }
 
   return (
     <div>
