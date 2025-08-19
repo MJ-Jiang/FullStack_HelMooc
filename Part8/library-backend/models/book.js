@@ -1,14 +1,12 @@
 const mongoose = require('mongoose')
-
-// you must install this library
 const uniqueValidator = require('mongoose-unique-validator')
 
 const schema = new mongoose.Schema({
   title: {
     type: String,
-    required: true,
+    required: [true, 'Book title is required'],
     unique: true,
-    minlength: 5
+    minlength: [5,'Book title must be at least 5 characters']
   },
   published: {
     type: Number,
