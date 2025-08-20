@@ -1,10 +1,23 @@
 
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
-import { ApolloClient,InMemoryCache, ApolloProvider  } from "@apollo/client";
-const client = new ApolloClient({
+import { ApolloClient,InMemoryCache, ApolloProvider, createHttpLink,    } from "@apollo/client";
+import {setContext} from '@apollo/client/link/context';
+const authLink = setContext((_, { headers }) => {
+  const token = localStorage.getItem('phonenumbers-user-token')
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : '',
+    }
+  }
+})
+const httpLink = createHttpLink({
   uri: 'http://localhost:4000',
+})
+const client = new ApolloClient({
   cache: new InMemoryCache(),
+  link: authLink.concat(httpLink), //a possible token in localStorage is set to header authorization for each request to the server.
 })
 
 

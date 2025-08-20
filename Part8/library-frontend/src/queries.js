@@ -53,6 +53,13 @@ export const EDIT_AUTHOR=gql`
     }
   }
 `
+export const LOGIN = gql`
+  mutation Login($username: String!, $password: String!) {  
+    login(username: $username, password: $password) {
+      value
+    }
+  }
+`
 
 //AddBook is the operation name, for debugging/devtools/logs
 //addBook is the mutation field name, used in the useMutation hook
