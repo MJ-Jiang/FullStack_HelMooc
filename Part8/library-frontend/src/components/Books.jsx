@@ -3,12 +3,17 @@ import { All_BOOKS } from "../queries";
 import { useState,useMemo } from "react";
 import { use } from "react";
 const Books = ({show}) => {
-  const {data,loading,error}=useQuery(All_BOOKS)
   const [genre,setGenre]=useState('')
+  const {data,loading,error}=useQuery(All_BOOKS, {
+    variables: { genre:genre || null}
+  });
+  
   const books = data?.allBooks ?? []
+  const {data:allData}=useQuery(All_BOOKS)
+  const allBooksForGenre=allData?.allBooks ?? [] //always the complete, unfiltered list of all books.
   const genres = useMemo(
-    () => Array.from(new Set(books.flatMap(b => b.genres))).sort(),
-    [books]
+    () => Array.from(new Set(allBooksForGenre.flatMap(b => b.genres))).sort(),
+    [allBooksForGenre]
   )
 //It only re-runs the function when values in the dependency array ([books]) change.
 //books.flatMap(b => b.genres) map transforms each book to its genres array.flatMap then flattens the arrays by one level into a single array.
@@ -20,9 +25,10 @@ const Books = ({show}) => {
     return <div>loading...</div>
   }
   if(error) return <div>error:{error.message}</div>
+  //8.19
+  //const visible=genre?books.filter(b=>b.genres.includes(genre)):books
 
-  const visible=genre?books.filter(b=>b.genres.includes(genre)):books
-  
+
   return (
     <div>
       <h2>books</h2>
@@ -35,7 +41,7 @@ const Books = ({show}) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {visible.map((a) => (
+          {books.map((a) => (
             <tr key={a.title}>
               <td>{a.title}</td>
               <td>{a.author.name}</td>
