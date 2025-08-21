@@ -9,7 +9,7 @@ import mongoose from 'mongoose'
 import jwt from 'jsonwebtoken'
 import { WebSocketServer } from 'ws'
 import { useServer } from 'graphql-ws/use/ws'
-
+import  bookLoader  from "./models/loaders.js"
 import typeDefs from './schema.js'
 import resolvers from './resolvers.js'
 import User from './models/user.js'
@@ -22,7 +22,8 @@ console.log('connecting to', MONGODB_URI)
 mongoose.connect(MONGODB_URI)
   .then(() => { console.log('connected to MongoDB') })
   .catch((error) => { console.log('error connecting to MongoDB:', error.message) })
-const start=async () => {
+mongoose.set('debug', true) // Enable Mongoose debug mode to log all operations
+  const start=async () => {
   const app = express() 
   const httpServer = http.createServer(app)
   const wsServer = new WebSocketServer({
@@ -51,24 +52,29 @@ const start=async () => {
   ],
   })
   await server.start()
-  app.use('/',cors(),express.json(), expressMiddleware(server, {
-    context: async ({ req }) => {
-      const auth = req?.headers?.authorization ?? ''  
-      if (auth.toLowerCase().startsWith('bearer ')) {
-        try { 
-          const decodedToken = jwt.verify(
-            auth.substring(7), process.env.JWT_SECRET
-          )
-          const currentUser = await User
-            .findById(decodedToken.id)
-          return { currentUser }
-        } catch {
-          return { currentUser: null }  
-        }
+  app.use('/', cors(), express.json(), expressMiddleware(server, {
+  context: async ({ req }) => {
+    let currentUser = null
+    const auth = req?.headers?.authorization ?? ''  
+
+    if (auth.toLowerCase().startsWith('bearer ')) {
+      try { 
+        const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET)
+        currentUser = await User.findById(decodedToken.id)
+      } catch (e) {
+        currentUser = null
       }
-      return { currentUser: null }
     }
-  }))
+
+    return { 
+      currentUser,
+      loaders: { bookCount: bookLoader }   // ✅ always added
+    }
+  }
+}))
+
+
+
   const PORT = process.env.PORT || 4000
   httpServer.listen(PORT, () => {
     console.log(`Server ready at http://localhost:${PORT}`)

@@ -35,9 +35,13 @@ const resolvers = {
     me: (_root, _args, { currentUser }) => currentUser,
   },
   Author: {
-    bookCount: async (root) => Book.countDocuments({ author: root._id })
-    //root (aka parent) is the object for the type you’re currently resolving.
-    //Because this is the Author.bookCount resolver, root is the current Author document (from Mongo/Mongoose) whose bookCount we’re computing.
+    // bookCount: async (root) => Book.countDocuments({ author: root._id })
+    // //root (aka parent) is the object for the type you’re currently resolving.
+    // //Because this is the Author.bookCount resolver, root is the current Author document (from Mongo/Mongoose) whose bookCount we’re computing.
+    bookCount: async (root, _args, { loaders }) => {
+      // loaders.bookCount is a DataLoader instance that batches and caches requests
+      return loaders.bookCount.load(root._id)
+    }
   },
   Mutation: {
     addBook: async (_root, args, { currentUser }) => {
