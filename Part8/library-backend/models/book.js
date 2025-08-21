@@ -1,6 +1,6 @@
-const mongoose = require('mongoose')
-const uniqueValidator = require('mongoose-unique-validator')
 
+import mongoose from 'mongoose'
+import uniqueValidator from 'mongoose-unique-validator'
 const schema = new mongoose.Schema({
   title: {
     type: String,
@@ -21,5 +21,5 @@ const schema = new mongoose.Schema({
 })
 
 schema.plugin(uniqueValidator)
-
-module.exports = mongoose.model('Book', schema)
+const Book = mongoose.model('Book', schema)
+export default Book
