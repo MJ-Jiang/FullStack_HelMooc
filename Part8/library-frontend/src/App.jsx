@@ -3,10 +3,24 @@ import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import LoginForm from "./components/LoginForm";
-import { useApolloClient } from "@apollo/client";
+import { useQuery,useApolloClient,useSubscription } from "@apollo/client";
 import Notify from "./components/Notify";
 import Recommendation from "./components/Recommendation";
-import { set } from "mongoose";
+import { All_BOOKS, BOOK_ADDED } from './queries'
+export const updateCache = (cache, query, addBook) => {
+  const uniqByTitleAuthor = (a) => {
+    let seen = new Set()
+    return a.filter((book) => {
+      let k = `${book.title}-${book.author.name}`
+      return seen.has(k) ? false : seen.add(k)
+    })
+  }
+  cache.updateQuery(query, ({ allBooks }) => {
+    return {
+      allBooks: uniqByTitleAuthor(allBooks.concat(addBook)),
+    }
+  })
+}
 const App = () => {
   const [page, setPage] = useState("authors");
   const [token, setToken]=useState(null)
@@ -32,7 +46,14 @@ const App = () => {
     }
   },[token])
         
-
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data,client }) => { 
+      const bookAdded = data.data.bookAdded;
+      notify(`New book added: ${bookAdded.title} by ${bookAdded.author.name}`);
+     updateCache(client.cache, { query: All_BOOKS }, bookAdded);
+      //update the cache with the new book added
+    }
+  });
   return (
     <div>
         <Notify errorMessage={errorMessage} />
@@ -59,7 +80,7 @@ const App = () => {
             <Authors show={page === "authors"} canEdit={!!token} />
             <Books show={page === "books"} />
             <NewBook show={page === "add" && !!token} />
-            <Recommendation show={page==='recommend'} />
+            <Recommendation show={page==='recommend' && !!token} />
           </>
         )}
     </div>

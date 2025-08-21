@@ -8,18 +8,24 @@ export const All_AUTHORS = gql`
   }
 }
 `
+export const BOOK_DETAILS = gql`
+  fragment bookDetails on Book {
+    title
+    author {
+      name
+      born
+    }
+    published
+    genres
+  }
+`
 export const All_BOOKS = gql`
   query allBooks($genre: String) {
     allBooks(genre: $genre) {
-      title
-      author {
-        name
-        born
-      }
-      published
-      genres
+     ...bookDetails
     }
   }
+  ${BOOK_DETAILS}
 `
 
 export const ADD_BOOK = gql`
@@ -35,13 +41,10 @@ export const ADD_BOOK = gql`
     published: $published,  
     genres: $genres
   ) {
-    title
-    author{
-    name born}
-    published
-    genres
-  }   
-}`
+    ...bookDetails
+    }   
+  }
+  ${BOOK_DETAILS}`
 //AddBook is the operation name, for debugging/devtools/logs, ($genre: String) means this query accepts a variable called $genre
 //addBook is the mutation field name, used in the useMutation hook;(genre: $genre) means call the allBooks field and pass it the $genre variable we declared above.
 
@@ -76,4 +79,14 @@ export const ME= gql`
       favouriteGenre
     } 
   }
+`
+
+
+export const BOOK_ADDED = gql`
+  subscription {
+    bookAdded {
+      ...bookDetails
+    }
+  }
+  ${BOOK_DETAILS}
 `
